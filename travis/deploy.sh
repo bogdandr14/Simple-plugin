@@ -1,0 +1,10 @@
+git config user.name "bogdandr14";
+git config user.email "bogdandraghici99@gmail.com";
+git fetch;
+git checkout -f master;
+git reset;
+cp -f target/addon.xml build;
+git add build/addon.xml;
+git pull;
+git commit -m "New release - ${TRAVIS_TAG}";
+git push origin HEAD:master; 
