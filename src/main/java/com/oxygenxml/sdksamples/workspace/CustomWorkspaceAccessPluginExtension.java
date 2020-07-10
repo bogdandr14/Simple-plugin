@@ -13,6 +13,7 @@ import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -94,6 +95,7 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 			 */
 			public void customizeMainMenu(JMenuBar mainMenuBar) {
 				JMenu myMenu = new JMenu("My menu");
+				//JMenuItem toUnderscoreItem = new JMenuItem();
 				myMenu.add(selectionSourceAction);
 				// Add your menu before the Help menu
 				mainMenuBar.add(myMenu, mainMenuBar.getMenuCount() - 1);
@@ -228,22 +230,9 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 				if(editorAccess != null){
 					if (EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())) {
 						WSAuthorEditorPage authorPageAccess = (WSAuthorEditorPage) editorAccess.getCurrentPage();
-						AuthorDocumentController controller = authorPageAccess.getDocumentController();
 						if (authorPageAccess.hasSelection()) {
 							ReplaceContentUtil.replaceOnAuthor(authorPageAccess);
-							// Create fragment from selection
-							/*int selectionStart = authorPageAccess.getSelectionStart();
-							int selectionEnd = authorPageAccess.getSelectionEnd();
-
-							TextContentIterator textContentIterator = controller.getTextContentIterator(selectionStart, selectionEnd);
-
-							while (textContentIterator.hasNext()) {
-								TextContext next = textContentIterator.next();
-								CharSequence string = next.getText();
-								String string2 = string.toString();
-								String replace = string2.replaceAll(" ", "_");
-								next.replaceText(replace);
-							}*/
+					
 						} else {
 							// No selection
 							pluginWorkspaceAccess.showInformationMessage("No selection available.");
@@ -251,14 +240,8 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 					} else if (EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID())) {
 						WSTextEditorPage textPage = (WSTextEditorPage) editorAccess.getCurrentPage();
 						if (textPage.hasSelection()) {
-							String replaceAll = ReplaceContentUtil.replaceOnText(textPage);
-							try {
-								textPage.getDocument().insertString(textPage.getCaretOffset(), replaceAll, null);
-							} catch (BadLocationException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-							pluginWorkspaceAccess.showInformationMessage(replaceAll);
+							ReplaceContentUtil.replaceOnText(textPage);
+							
 						} else {
 							// No selection
 							pluginWorkspaceAccess.showInformationMessage("No selection available.");

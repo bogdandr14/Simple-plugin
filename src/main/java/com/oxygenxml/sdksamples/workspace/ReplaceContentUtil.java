@@ -7,6 +7,7 @@ import ro.sync.ecss.extensions.api.content.TextContentIterator;
 import ro.sync.ecss.extensions.api.content.TextContext;
 import ro.sync.exml.workspace.api.editor.page.author.WSAuthorEditorPage;
 import ro.sync.exml.workspace.api.editor.page.text.WSTextEditorPage;
+import ro.sync.exml.workspace.api.standalone.StandalonePluginWorkspace;
 
 public class ReplaceContentUtil {
 	public static void replaceOnAuthor(WSAuthorEditorPage authorPageAccess) {
@@ -24,11 +25,16 @@ public class ReplaceContentUtil {
 		}
 	}
 	
-	public static String replaceOnText(	WSTextEditorPage textPage) {
+	public static void replaceOnText(WSTextEditorPage textPage) {
 		
 		String replaceAll = textPage.getSelectedText().replaceAll(" ", "_");
 		textPage.deleteSelection();
 		
-		return replaceAll;
+		try {
+			textPage.getDocument().insertString(textPage.getCaretOffset(), replaceAll, null);
+		} catch (BadLocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
