@@ -1,15 +1,23 @@
 package com.oxygenxml.sdksamples.workspace;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
+import java.io.IOException;
 import java.io.StringReader;
 
+import javax.swing.text.BadLocationException;
 import javax.xml.transform.stream.StreamSource;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.w3c.css.sac.InputSource;
+import org.xml.sax.SAXException;
+
 import junit.framework.TestCase;
 import ro.sync.ecss.component.CSSInputSource;
 import ro.sync.ecss.css.csstopdf.facade.AuthorDocumentFacade;
@@ -67,7 +75,8 @@ public class SampleTest extends TestCase{
 		Mockito.when(wsAuthorEditorPage.getDocumentController()).thenReturn(controller);
 	//	Mockito.when(controller.getTextContentIterator(s,e)).thenReturn()
 		
-		ReplaceContentUtil.replaceOnAuthor(wsAuthorEditorPage," ","_");
+		ReplaceToUnderscore util = new ReplaceToUnderscore();
+		util.replaceOnAuthor(wsAuthorEditorPage);
 		
 		
 		AuthorDocument documentNode = controller.getAuthorDocumentNode();

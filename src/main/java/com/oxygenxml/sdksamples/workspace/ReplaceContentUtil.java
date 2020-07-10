@@ -7,27 +7,27 @@ import ro.sync.ecss.extensions.api.content.TextContentIterator;
 import ro.sync.ecss.extensions.api.content.TextContext;
 import ro.sync.exml.workspace.api.editor.page.author.WSAuthorEditorPage;
 import ro.sync.exml.workspace.api.editor.page.text.WSTextEditorPage;
-import ro.sync.exml.workspace.api.standalone.StandalonePluginWorkspace;
 
 public class ReplaceContentUtil {
-	public static void replaceOnAuthor(WSAuthorEditorPage authorPageAccess) {
-		
+	
+	public static void replaceOnAuthor(WSAuthorEditorPage authorPageAccess, String toReplace, String replaceWith) {
 		AuthorDocumentController controller = authorPageAccess.getDocumentController();
-
+	
 		TextContentIterator textContentIterator = controller.getTextContentIterator(authorPageAccess.getSelectionStart(), authorPageAccess.getSelectionEnd());
 		
 		while (textContentIterator.hasNext()) {
 			TextContext next = textContentIterator.next();
 			CharSequence string = next.getText();
 			String string2 = string.toString();
-			String replace = string2.replaceAll(" ", "_");
+			String replace = string2.replaceAll(toReplace, replaceWith);
 			next.replaceText(replace);
 		}
+			
 	}
 	
-	public static void replaceOnText(WSTextEditorPage textPage) {
+	public static void replaceOnText(WSTextEditorPage textPage,String toReplace, String replaceWith) {
 		
-		String replaceAll = textPage.getSelectedText().replaceAll(" ", "_");
+		String replaceAll = textPage.getSelectedText().replaceAll(toReplace, replaceWith);
 		textPage.deleteSelection();
 		
 		try {

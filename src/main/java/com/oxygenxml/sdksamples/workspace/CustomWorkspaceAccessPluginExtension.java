@@ -60,126 +60,142 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 	 * @see ro.sync.exml.plugin.workspace.WorkspaceAccessPluginExtension#applicationStarted(ro.sync.exml.workspace.api.standalone.StandalonePluginWorkspace)
 	 */
 	public void applicationStarted(final StandalonePluginWorkspace pluginWorkspaceAccess) {
-		//You can set or read global options.
-		//The "ro.sync.exml.options.APIAccessibleOptionTags" contains all accessible keys.
-		//		  pluginWorkspaceAccess.setGlobalObjectProperty("can.edit.read.only.files", Boolean.FALSE);
+		// You can set or read global options.
+		// The "ro.sync.exml.options.APIAccessibleOptionTags" contains all accessible
+		// keys.
+		// pluginWorkspaceAccess.setGlobalObjectProperty("can.edit.read.only.files",
+		// Boolean.FALSE);
 		// Check In action
 
-		//You can access the content inside each opened WSEditor depending on the current editing page (Text/Grid or Author).  
-		// A sample action which will be mounted on the main menu, toolbar and contextual menu.
-		final Action selectionSourceAction = createShowSelectionAction(pluginWorkspaceAccess);
-		//Mount the action on the contextual menus for the Text and Author modes.
+		// You can access the content inside each opened WSEditor depending on the
+		// current editing page (Text/Grid or Author).
+		// A sample action which will be mounted on the main menu, toolbar and
+		// contextual menu.
+		//final Action selectionSourceAction = createShowSelectionAction(pluginWorkspaceAccess);
+		final Action spaceToUnderscoreAction = createShowSelectionAction(pluginWorkspaceAccess,
+				" ", "_", "spaces to underscore");
+		final Action underscoreToSpaceAction = createShowSelectionAction(pluginWorkspaceAccess,
+				"_", " ", "underscores to space");
+		// Mount the action on the contextual menus for the Text and Author modes.
 		pluginWorkspaceAccess.addMenusAndToolbarsContributorCustomizer(new MenusAndToolbarsContributorCustomizer() {
 			/**
 			 * Customize the author popup menu.
 			 */
 			@Override
-			public void customizeAuthorPopUpMenu(JPopupMenu popup,
-					AuthorAccess authorAccess) {
+			public void customizeAuthorPopUpMenu(JPopupMenu popup, AuthorAccess authorAccess) {
 				// Add our custom action
-				popup.add(selectionSourceAction);
+				JMenu transformMenu = new JMenu("Transform");
+				transformMenu.add(spaceToUnderscoreAction);
+				transformMenu.add(underscoreToSpaceAction);
+
+				popup.add(transformMenu);
 			}
 
 			@Override
-			public void customizeTextPopUpMenu(JPopupMenu popup,
-					WSTextEditorPage textPage) {
+			public void customizeTextPopUpMenu(JPopupMenu popup, WSTextEditorPage textPage) {
 				// Add our custom action
-				popup.add(selectionSourceAction);
+				popup.add(spaceToUnderscoreAction);
+				popup.add(underscoreToSpaceAction);
 			}
 		});
 
-		// Create your own main menu and add it to Oxygen or remove one of Oxygen's menus...
+		// Create your own main menu and add it to Oxygen or remove one of Oxygen's
+		// menus...
 		pluginWorkspaceAccess.addMenuBarCustomizer(new MenuBarCustomizer() {
 			/**
 			 * @see ro.sync.exml.workspace.api.standalone.MenuBarCustomizer#customizeMainMenu(javax.swing.JMenuBar)
 			 */
 			public void customizeMainMenu(JMenuBar mainMenuBar) {
 				JMenu myMenu = new JMenu("My menu");
-				//JMenuItem toUnderscoreItem = new JMenuItem();
-				myMenu.add(selectionSourceAction);
+				JMenuItem toUnderscoreItem = new JMenuItem(spaceToUnderscoreAction);
+				JMenuItem toSpaceItem = new JMenuItem(underscoreToSpaceAction);
+				myMenu.add(toUnderscoreItem);
+				myMenu.add(toSpaceItem);
 				// Add your menu before the Help menu
 				mainMenuBar.add(myMenu, mainMenuBar.getMenuCount() - 1);
 			}
 		});
 
+		pluginWorkspaceAccess.addEditorChangeListener(new WSEditorChangeListener() {
+			@Override
+			public boolean editorAboutToBeOpenedVeto(URL editorLocation) {
+				// You can reject here the opening of an URL if you want
+				return true;
+			}
 
-		pluginWorkspaceAccess.addEditorChangeListener(
-				new WSEditorChangeListener() {
-					@Override
-					public boolean editorAboutToBeOpenedVeto(URL editorLocation) {
-						//You can reject here the opening of an URL if you want
-						return true;
-					}
-					@Override
-					public void editorOpened(URL editorLocation) {
-						checkActionsStatus(editorLocation);
-					}
+			@Override
+			public void editorOpened(URL editorLocation) {
+				checkActionsStatus(editorLocation);
+			}
 
-					// Check actions status
-					private void checkActionsStatus(URL editorLocation) {
-						WSEditor editorAccess = pluginWorkspaceAccess.getCurrentEditorAccess(StandalonePluginWorkspace.MAIN_EDITING_AREA);
-						if (editorAccess != null) {
-							selectionSourceAction.setEnabled(
-									EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())
+			// Check actions status
+			private void checkActionsStatus(URL editorLocation) {
+				WSEditor editorAccess = pluginWorkspaceAccess
+						.getCurrentEditorAccess(StandalonePluginWorkspace.MAIN_EDITING_AREA);
+				if (editorAccess != null) {
+					spaceToUnderscoreAction
+							.setEnabled(EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())
 									|| EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID()));
-						}
-					}
+					underscoreToSpaceAction.setEnabled(EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())
+							|| EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID()));
+				}
+			}
 
-					@Override
-					public void editorClosed(URL editorLocation) {
-						//An edited XML document has been closed.
-					}
+			@Override
+			public void editorClosed(URL editorLocation) {
+				// An edited XML document has been closed.
+			}
 
-					/**
-					 * @see ro.sync.exml.workspace.api.listeners.WSEditorChangeListener#editorAboutToBeClosed(java.net.URL)
-					 */
-					@Override
-					public boolean editorAboutToBeClosed(URL editorLocation) {
-						//You can veto the closing of an XML document.
-						//Allow close
-						return true;
-					}
+			/**
+			 * @see ro.sync.exml.workspace.api.listeners.WSEditorChangeListener#editorAboutToBeClosed(java.net.URL)
+			 */
+			@Override
+			public boolean editorAboutToBeClosed(URL editorLocation) {
+				// You can veto the closing of an XML document.
+				// Allow close
+				return true;
+			}
 
-					/**
-					 * The editor was relocated (Save as was called).
-					 * 
-					 * @see ro.sync.exml.workspace.api.listeners.WSEditorChangeListener#editorRelocated(java.net.URL, java.net.URL)
-					 */
-					@Override
-					public void editorRelocated(URL previousEditorLocation, URL newEditorLocation) {
-						//
-					}
+			/**
+			 * The editor was relocated (Save as was called).
+			 * 
+			 * @see ro.sync.exml.workspace.api.listeners.WSEditorChangeListener#editorRelocated(java.net.URL,
+			 *      java.net.URL)
+			 */
+			@Override
+			public void editorRelocated(URL previousEditorLocation, URL newEditorLocation) {
+				//
+			}
 
-					@Override
-					public void editorPageChanged(URL editorLocation) {
-						checkActionsStatus(editorLocation);
-					}
+			@Override
+			public void editorPageChanged(URL editorLocation) {
+				checkActionsStatus(editorLocation);
+			}
 
-					@Override
-					public void editorSelected(URL editorLocation) {
-						checkActionsStatus(editorLocation);
-					}
+			@Override
+			public void editorSelected(URL editorLocation) {
+				checkActionsStatus(editorLocation);
+			}
 
-					@Override
-					public void editorActivated(URL editorLocation) {
-						checkActionsStatus(editorLocation);
-					}
-				}, 
-				StandalonePluginWorkspace.MAIN_EDITING_AREA);
+			@Override
+			public void editorActivated(URL editorLocation) {
+				checkActionsStatus(editorLocation);
+			}
+		}, StandalonePluginWorkspace.MAIN_EDITING_AREA);
 
-
-		//You can use this callback to populate your custom toolbar (defined in the plugin.xml) or to modify an existing Oxygen toolbar 
-		// (add components to it or remove them) 
+		// You can use this callback to populate your custom toolbar (defined in the
+		// plugin.xml) or to modify an existing Oxygen toolbar
+		// (add components to it or remove them)
 		pluginWorkspaceAccess.addToolbarComponentsCustomizer(new ToolbarComponentsCustomizer() {
 			/**
 			 * @see ro.sync.exml.workspace.api.standalone.ToolbarComponentsCustomizer#customizeToolbar(ro.sync.exml.workspace.api.standalone.ToolbarInfo)
 			 */
 			public void customizeToolbar(ToolbarInfo toolbarInfo) {
-				//The toolbar ID is defined in the "plugin.xml"
-				if("SampleWorkspaceAccessToolbarID".equals(toolbarInfo.getToolbarID())) {
-					List<JComponent> comps = new ArrayList<JComponent>(); 
+				// The toolbar ID is defined in the "plugin.xml"
+				if ("SampleWorkspaceAccessToolbarID".equals(toolbarInfo.getToolbarID())) {
+					List<JComponent> comps = new ArrayList<JComponent>();
 					JComponent[] initialComponents = toolbarInfo.getComponents();
-					boolean hasInitialComponents = initialComponents != null && initialComponents.length > 0; 
+					boolean hasInitialComponents = initialComponents != null && initialComponents.length > 0;
 					if (hasInitialComponents) {
 						// Add initial toolbar components
 						for (JComponent toolbarItem : initialComponents) {
@@ -187,11 +203,16 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 						}
 					}
 
-					//Add your own toolbar button using our "ro.sync.exml.workspace.api.standalone.ui.ToolbarButton" API component
-					ToolbarButton customButton = new ToolbarButton(selectionSourceAction, true);
-					comps.add(customButton);
-					toolbarInfo.setComponents(comps.toArray(new JComponent[0]));
-				} 
+					// Add your own toolbar button using our
+					// "ro.sync.exml.workspace.api.standalone.ui.ToolbarButton" API component
+					ToolbarButton customUnderscoreButton = new ToolbarButton(spaceToUnderscoreAction, true);
+					comps.add(customUnderscoreButton);
+					
+					ToolbarButton customSpaceButton = new ToolbarButton(underscoreToSpaceAction, true);
+					
+					comps.add(customSpaceButton);
+					toolbarInfo.setComponents(comps.toArray(new JComponent[1]));
+				}
 			}
 		});
 
@@ -200,17 +221,18 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 			 * @see ro.sync.exml.workspace.api.standalone.ViewComponentCustomizer#customizeView(ro.sync.exml.workspace.api.standalone.ViewInfo)
 			 */
 			public void customizeView(ViewInfo viewInfo) {
-				if(
-						//The view ID defined in the "plugin.xml"
-						"SampleWorkspaceAccessID".equals(viewInfo.getViewID())) {
+				if (
+				// The view ID defined in the "plugin.xml"
+				"SampleWorkspaceAccessID".equals(viewInfo.getViewID())) {
 					customMessagesArea = new JTextArea("Messages:");
 					viewInfo.setComponent(new JScrollPane(customMessagesArea));
 					viewInfo.setTitle("Custom Messages");
-					//You can have images located inside the JAR library and use them...
-					//				  viewInfo.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/customMessage.png").toString()));
-				} 
+					// You can have images located inside the JAR library and use them...
+					// viewInfo.setIcon(new
+					// ImageIcon(getClass().getClassLoader().getResource("images/customMessage.png").toString()));
+				}
 			}
-		}); 
+		});
 	}
 
 	/**
@@ -220,19 +242,20 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 	 * @return The "Show Selection" action
 	 */
 	@SuppressWarnings("serial")
-	private AbstractAction createShowSelectionAction(
-			final StandalonePluginWorkspace pluginWorkspaceAccess) {
-		return new AbstractAction("Change space to underscore") {
+	private AbstractAction createShowSelectionAction(final StandalonePluginWorkspace pluginWorkspaceAccess,
+			String toReplace, String replaceWith, String replaceOperation) {
+		return new AbstractAction(replaceOperation) {
 			public void actionPerformed(ActionEvent actionevent) {
-				//Get the current opened XML document
-				WSEditor editorAccess = pluginWorkspaceAccess.getCurrentEditorAccess(StandalonePluginWorkspace.MAIN_EDITING_AREA);
+				// Get the current opened XML document
+				WSEditor editorAccess = pluginWorkspaceAccess
+						.getCurrentEditorAccess(StandalonePluginWorkspace.MAIN_EDITING_AREA);
 				// The action is available only in Author mode.
-				if(editorAccess != null){
+				if (editorAccess != null) {
 					if (EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())) {
 						WSAuthorEditorPage authorPageAccess = (WSAuthorEditorPage) editorAccess.getCurrentPage();
 						if (authorPageAccess.hasSelection()) {
-							ReplaceContentUtil.replaceOnAuthor(authorPageAccess);
-					
+							ReplaceContentUtil.replaceOnAuthor(authorPageAccess,toReplace, replaceWith);
+
 						} else {
 							// No selection
 							pluginWorkspaceAccess.showInformationMessage("No selection available.");
@@ -240,8 +263,8 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 					} else if (EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID())) {
 						WSTextEditorPage textPage = (WSTextEditorPage) editorAccess.getCurrentPage();
 						if (textPage.hasSelection()) {
-							ReplaceContentUtil.replaceOnText(textPage);
-							
+							ReplaceContentUtil.replaceOnText(textPage,toReplace, replaceWith);
+
 						} else {
 							// No selection
 							pluginWorkspaceAccess.showInformationMessage("No selection available.");
@@ -251,11 +274,12 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 			}
 		};
 	}
+
 	/**
 	 * @see ro.sync.exml.plugin.workspace.WorkspaceAccessPluginExtension#applicationClosing()
 	 */
 	public boolean applicationClosing() {
-		//You can reject the application closing here
+		// You can reject the application closing here
 		return true;
 	}
 }
