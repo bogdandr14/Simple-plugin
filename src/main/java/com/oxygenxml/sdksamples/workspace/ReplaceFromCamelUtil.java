@@ -1,6 +1,5 @@
 package com.oxygenxml.sdksamples.workspace;
 
-
 import javax.swing.text.BadLocationException;
 
 import ro.sync.ecss.extensions.api.AuthorDocumentController;
@@ -9,26 +8,27 @@ import ro.sync.ecss.extensions.api.content.TextContext;
 import ro.sync.exml.workspace.api.editor.page.author.WSAuthorEditorPage;
 import ro.sync.exml.workspace.api.editor.page.text.WSTextEditorPage;
 
-public class ReplaceCamelUtil extends ReplaceContentUtil{
+public class ReplaceFromCamelUtil {
 	
-	static String toProperCase(String s) {
-	    return s.substring(0, 1).toUpperCase() +
-	               s.substring(1);
-	}
-
-	static String toCamelCase(String s, boolean isPascal){
-	   String[] parts = s.split("[\\_ ]");
-	   String camelCaseString = "";
-	   for (String part : parts){
-	      camelCaseString = camelCaseString + toProperCase(part);
-	   }
-	   if(!isPascal) {
-		   camelCaseString = camelCaseString.substring(0,1).toLowerCase() + camelCaseString.substring(1);
-	   }
-	   return camelCaseString;
-	}
+	static String fromCamelCase(String s, String add){
+		   String[] parts = s.split("(?=[A-Z])");
+		   String normalCaseString = "";
+		   for (String part : parts){
+			   if(normalCaseString == "") {
+				   normalCaseString = part;
+				   continue;
+			   }
+			   if(add == "_")
+				   normalCaseString = normalCaseString + add + part.toLowerCase();
+			   else
+				   normalCaseString = normalCaseString + add + part;
+		   }	
+		   if(add == " ")
+			   normalCaseString = normalCaseString.substring(0,1).toUpperCase() + normalCaseString.substring(1);
+		   return normalCaseString;
+		}
 	
-	public static void replaceCamelOnAuthor(WSAuthorEditorPage authorPageAccess, boolean isPascal) {
+	public static void replaceFromCamelOnAuthor(WSAuthorEditorPage authorPageAccess, String replaceWith) {
 		AuthorDocumentController controller = authorPageAccess.getDocumentController();
 	
 		TextContentIterator textContentIterator = controller.getTextContentIterator(authorPageAccess.getSelectionStart(), authorPageAccess.getSelectionEnd());
@@ -37,19 +37,18 @@ public class ReplaceCamelUtil extends ReplaceContentUtil{
 			TextContext next = textContentIterator.next();
 			CharSequence string = next.getText();
 			String string2 = string.toString();
-			
-			next.replaceText(toCamelCase(string2, isPascal));
+			next.replaceText(fromCamelCase(string2, replaceWith));
 		}
 			
 	}
 	
-	public static void replaceCamelOnText(WSTextEditorPage textPage,boolean isPascal) {
+	public static void replaceFromCamelOnText(WSTextEditorPage textPage,String replaceWith) {
 		
 		String replaceAll = textPage.getSelectedText();
 		textPage.deleteSelection();
 		
 		try {
-			textPage.getDocument().insertString(textPage.getCaretOffset(), toCamelCase(replaceAll, isPascal), null);
+			textPage.getDocument().insertString(textPage.getCaretOffset(), fromCamelCase(replaceAll, replaceWith), null);
 		} catch (BadLocationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

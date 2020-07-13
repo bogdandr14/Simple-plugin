@@ -81,7 +81,12 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 
 		final Action underscoreToPascalAction = transformCamelAction(pluginWorkspaceAccess,
 				true, "to pascal case");
-
+		
+		final Action camelToUnderscoreAction = transformUnderscoreAction(pluginWorkspaceAccess,
+				"_", "camel to underscore");
+		
+		final Action camelToSpaceAction = transformUnderscoreAction(pluginWorkspaceAccess,
+				" ", "camel to space");
 		// Mount the action on the contextual menus for the Text and Author modes.
 		pluginWorkspaceAccess.addMenusAndToolbarsContributorCustomizer(new MenusAndToolbarsContributorCustomizer() {
 			/**
@@ -95,6 +100,8 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 				transformMenu.add(underscoreToSpaceAction);
 				transformMenu.add(underscoreToCamelAction);
 				transformMenu.add(underscoreToPascalAction);
+				transformMenu.add(camelToUnderscoreAction);
+				transformMenu.add(camelToSpaceAction);
 				popup.add(transformMenu);
 			}
 
@@ -106,6 +113,8 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 				transformMenu.add(underscoreToSpaceAction);
 				transformMenu.add(underscoreToCamelAction);
 				transformMenu.add(underscoreToPascalAction);
+				transformMenu.add(camelToUnderscoreAction);
+				transformMenu.add(camelToSpaceAction);
 				popup.add(transformMenu);
 
 			}
@@ -123,12 +132,15 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 				JMenuItem toSpaceItem = new JMenuItem(underscoreToSpaceAction);
 				JMenuItem toCamelItem = new JMenuItem(underscoreToCamelAction);
 				JMenuItem toPascalItem = new JMenuItem(underscoreToPascalAction);
+				JMenuItem fromCamelToUnderscoreItem = new JMenuItem(camelToUnderscoreAction);
+				JMenuItem fromCamelToSpaceItem = new JMenuItem(camelToSpaceAction);
 
 				myMenu.add(toUnderscoreItem);
 				myMenu.add(toSpaceItem);
 				myMenu.add(toCamelItem);
 				myMenu.add(toPascalItem);
-
+				myMenu.add(fromCamelToUnderscoreItem);
+				myMenu.add(fromCamelToSpaceItem);
 				// Add your menu before the Help menu
 				mainMenuBar.add(myMenu, mainMenuBar.getMenuCount() - 1);
 			}
@@ -160,6 +172,12 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 					.setEnabled(EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())
 							|| EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID()));
 					underscoreToPascalAction
+					.setEnabled(EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())
+							|| EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID()));
+					camelToUnderscoreAction
+					.setEnabled(EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())
+							|| EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID()));
+					camelToSpaceAction
 					.setEnabled(EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())
 							|| EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID()));
 				}
@@ -241,6 +259,12 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 					ToolbarButton customPascalButton = new ToolbarButton(underscoreToPascalAction, true);
 					comps.add(customPascalButton);
 					
+//					ToolbarButton customCamelButton = new ToolbarButton(underscoreToCamelAction, true);
+//					comps.add(customCamelButton);
+//					
+//					ToolbarButton customPascalButton = new ToolbarButton(underscoreToPascalAction, true);
+//					comps.add(customPascalButton);
+					
 					toolbarInfo.setComponents(comps.toArray(new JComponent[3]));
 				}
 			}
@@ -263,6 +287,40 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 				}
 			}
 		});
+	}
+
+	@SuppressWarnings("serial")
+	private Action transformUnderscoreAction(StandalonePluginWorkspace pluginWorkspaceAccess, String replaceWith,
+			String string) {
+		return new AbstractAction(string) {
+			public void actionPerformed(ActionEvent actionevent) {
+				// Get the current opened XML document
+				WSEditor editorAccess = pluginWorkspaceAccess
+						.getCurrentEditorAccess(StandalonePluginWorkspace.MAIN_EDITING_AREA);
+				// The action is available only in Author mode.
+				if (editorAccess != null) {
+					if (EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())) {
+						WSAuthorEditorPage authorPageAccess = (WSAuthorEditorPage) editorAccess.getCurrentPage();
+						if (authorPageAccess.hasSelection()) {
+							ReplaceFromCamelUtil.replaceFromCamelOnAuthor(authorPageAccess,replaceWith);
+
+						} else {
+							// No selection
+							pluginWorkspaceAccess.showInformationMessage("No selection available.");
+						}
+					} else if (EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID())) {
+						WSTextEditorPage textPage = (WSTextEditorPage) editorAccess.getCurrentPage();
+						if (textPage.hasSelection()) {
+							ReplaceFromCamelUtil.replaceFromCamelOnText(textPage, replaceWith);
+
+						} else {
+							// No selection
+							pluginWorkspaceAccess.showInformationMessage("No selection available.");
+						}
+					}
+				}
+			}
+		};
 	}
 
 	@SuppressWarnings("serial")
