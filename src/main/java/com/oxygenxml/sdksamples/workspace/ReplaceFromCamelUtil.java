@@ -14,16 +14,16 @@ public class ReplaceFromCamelUtil {
 		   String[] parts = s.split("(?=[A-Z])");
 		   String normalCaseString = "";
 		   for (String part : parts){
-			   if(normalCaseString == "") {
+			   if(normalCaseString.equals("")) {
 				   normalCaseString = part;
 				   continue;
 			   }
-			   if(add == "_")
+			   if(add.equals("_"))
 				   normalCaseString = normalCaseString + add + part.toLowerCase();
 			   else
 				   normalCaseString = normalCaseString + add + part;
 		   }	
-		   if(add == " ")
+		   if(add.equals(" "))
 			   normalCaseString = normalCaseString.substring(0,1).toUpperCase() + normalCaseString.substring(1);
 		   return normalCaseString;
 		}
@@ -50,7 +50,6 @@ public class ReplaceFromCamelUtil {
 		try {
 			textPage.getDocument().insertString(textPage.getCaretOffset(), fromCamelCase(replaceAll, replaceWith), null);
 		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

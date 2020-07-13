@@ -51,7 +51,6 @@ public class ReplaceCamelUtil extends ReplaceContentUtil{
 		try {
 			textPage.getDocument().insertString(textPage.getCaretOffset(), toCamelCase(replaceAll, isPascal), null);
 		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

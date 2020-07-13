@@ -3,10 +3,7 @@ package com.oxygenxml.sdksamples.workspace;
 import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -17,8 +14,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Segment;
 
 import ro.sync.ecss.extensions.api.AuthorAccess;
 import ro.sync.ecss.extensions.api.AuthorDocumentController;
@@ -55,7 +50,8 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 	 * The custom messages area. A sample component added to your custom view.
 	 */
 	private JTextArea customMessagesArea;
-
+	private static String MENU_NAME = "Transform";
+	private static String NO_SELECTION = "No selection available.";
 	/**
 	 * @see ro.sync.exml.plugin.workspace.WorkspaceAccessPluginExtension#applicationStarted(ro.sync.exml.workspace.api.standalone.StandalonePluginWorkspace)
 	 */
@@ -63,15 +59,13 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 		// You can set or read global options.
 		// The "ro.sync.exml.options.APIAccessibleOptionTags" contains all accessible
 		// keys.
-		// pluginWorkspaceAccess.setGlobalObjectProperty("can.edit.read.only.files",
-		// Boolean.FALSE);
+		pluginWorkspaceAccess.setGlobalObjectProperty("can.edit.read.only.files", Boolean.FALSE);
 		// Check In action
 
 		// You can access the content inside each opened WSEditor depending on the
 		// current editing page (Text/Grid or Author).
 		// A sample action which will be mounted on the main menu, toolbar and
 		// contextual menu.
-		//final Action selectionSourceAction = transformSpaceAction(pluginWorkspaceAccess);
 		final Action spaceToUnderscoreAction = transformSpaceAction(pluginWorkspaceAccess,
 				" ", "_", "spaces to underscore");
 		final Action underscoreToSpaceAction = transformSpaceAction(pluginWorkspaceAccess,
@@ -95,7 +89,7 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 			@Override
 			public void customizeAuthorPopUpMenu(JPopupMenu popup, AuthorAccess authorAccess) {
 				// Add our custom action
-				JMenu transformMenu = new JMenu("Transform");
+				JMenu transformMenu = new JMenu(MENU_NAME);
 				transformMenu.add(spaceToUnderscoreAction);
 				transformMenu.add(underscoreToSpaceAction);
 				transformMenu.add(underscoreToCamelAction);
@@ -108,7 +102,7 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 			@Override
 			public void customizeTextPopUpMenu(JPopupMenu popup, WSTextEditorPage textPage) {
 				// Add our custom action
-				JMenu transformMenu = new JMenu("Transform");
+				JMenu transformMenu = new JMenu(MENU_NAME);
 				transformMenu.add(spaceToUnderscoreAction);
 				transformMenu.add(underscoreToSpaceAction);
 				transformMenu.add(underscoreToCamelAction);
@@ -127,7 +121,7 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 			 * @see ro.sync.exml.workspace.api.standalone.MenuBarCustomizer#customizeMainMenu(javax.swing.JMenuBar)
 			 */
 			public void customizeMainMenu(JMenuBar mainMenuBar) {
-				JMenu myMenu = new JMenu("Transform");
+				JMenu myMenu = new JMenu(MENU_NAME);
 				JMenuItem toUnderscoreItem = new JMenuItem(spaceToUnderscoreAction);
 				JMenuItem toSpaceItem = new JMenuItem(underscoreToSpaceAction);
 				JMenuItem toCamelItem = new JMenuItem(underscoreToCamelAction);
@@ -235,7 +229,7 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 			public void customizeToolbar(ToolbarInfo toolbarInfo) {
 				// The toolbar ID is defined in the "plugin.xml"
 				if ("SampleWorkspaceAccessToolbarID".equals(toolbarInfo.getToolbarID())) {
-					List<JComponent> comps = new ArrayList<JComponent>();
+					List<JComponent> comps = new ArrayList<>();
 					JComponent[] initialComponents = toolbarInfo.getComponents();
 					boolean hasInitialComponents = initialComponents != null && initialComponents.length > 0;
 					if (hasInitialComponents) {
@@ -259,13 +253,13 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 					ToolbarButton customPascalButton = new ToolbarButton(underscoreToPascalAction, true);
 					comps.add(customPascalButton);
 					
-//					ToolbarButton customCamelButton = new ToolbarButton(underscoreToCamelAction, true);
-//					comps.add(customCamelButton);
-//					
-//					ToolbarButton customPascalButton = new ToolbarButton(underscoreToPascalAction, true);
-//					comps.add(customPascalButton);
+					ToolbarButton customToUnderscoreButton = new ToolbarButton(camelToUnderscoreAction, true);
+					comps.add(customToUnderscoreButton);
 					
-					toolbarInfo.setComponents(comps.toArray(new JComponent[3]));
+					ToolbarButton customToSpaceButton = new ToolbarButton(camelToSpaceAction, true);
+					comps.add(customToSpaceButton);
+					
+					toolbarInfo.setComponents(comps.toArray(new JComponent[5]));
 				}
 			}
 		});
@@ -306,7 +300,7 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 
 						} else {
 							// No selection
-							pluginWorkspaceAccess.showInformationMessage("No selection available.");
+							pluginWorkspaceAccess.showInformationMessage(NO_SELECTION);
 						}
 					} else if (EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID())) {
 						WSTextEditorPage textPage = (WSTextEditorPage) editorAccess.getCurrentPage();
@@ -315,7 +309,7 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 
 						} else {
 							// No selection
-							pluginWorkspaceAccess.showInformationMessage("No selection available.");
+							pluginWorkspaceAccess.showInformationMessage(NO_SELECTION);
 						}
 					}
 				}
@@ -339,7 +333,7 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 
 						} else {
 							// No selection
-							pluginWorkspaceAccess.showInformationMessage("No selection available.");
+							pluginWorkspaceAccess.showInformationMessage(NO_SELECTION);
 						}
 					} else if (EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID())) {
 						WSTextEditorPage textPage = (WSTextEditorPage) editorAccess.getCurrentPage();
@@ -348,7 +342,7 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 
 						} else {
 							// No selection
-							pluginWorkspaceAccess.showInformationMessage("No selection available.");
+							pluginWorkspaceAccess.showInformationMessage(NO_SELECTION);
 						}
 					}
 				}
@@ -379,7 +373,7 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 
 						} else {
 							// No selection
-							pluginWorkspaceAccess.showInformationMessage("No selection available.");
+							pluginWorkspaceAccess.showInformationMessage(NO_SELECTION);
 						}
 					} else if (EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID())) {
 						WSTextEditorPage textPage = (WSTextEditorPage) editorAccess.getCurrentPage();
@@ -388,7 +382,7 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 
 						} else {
 							// No selection
-							pluginWorkspaceAccess.showInformationMessage("No selection available.");
+							pluginWorkspaceAccess.showInformationMessage(NO_SELECTION);
 						}
 					}
 				}

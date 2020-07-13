@@ -33,7 +33,6 @@ public class ReplaceContentUtil {
 		try {
 			textPage.getDocument().insertString(textPage.getCaretOffset(), replaceAll, null);
 		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
