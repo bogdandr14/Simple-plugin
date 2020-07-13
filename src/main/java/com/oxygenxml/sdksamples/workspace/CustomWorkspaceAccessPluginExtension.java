@@ -71,11 +71,17 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 		// current editing page (Text/Grid or Author).
 		// A sample action which will be mounted on the main menu, toolbar and
 		// contextual menu.
-		//final Action selectionSourceAction = createShowSelectionAction(pluginWorkspaceAccess);
-		final Action spaceToUnderscoreAction = createShowSelectionAction(pluginWorkspaceAccess,
+		//final Action selectionSourceAction = transformSpaceAction(pluginWorkspaceAccess);
+		final Action spaceToUnderscoreAction = transformSpaceAction(pluginWorkspaceAccess,
 				" ", "_", "spaces to underscore");
-		final Action underscoreToSpaceAction = createShowSelectionAction(pluginWorkspaceAccess,
+		final Action underscoreToSpaceAction = transformSpaceAction(pluginWorkspaceAccess,
 				"_", " ", "underscores to space");
+		final Action underscoreToCamelAction = transformCamelAction(pluginWorkspaceAccess,
+				false, "to camel case");
+
+		final Action underscoreToPascalAction = transformCamelAction(pluginWorkspaceAccess,
+				true, "to pascal case");
+
 		// Mount the action on the contextual menus for the Text and Author modes.
 		pluginWorkspaceAccess.addMenusAndToolbarsContributorCustomizer(new MenusAndToolbarsContributorCustomizer() {
 			/**
@@ -87,15 +93,21 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 				JMenu transformMenu = new JMenu("Transform");
 				transformMenu.add(spaceToUnderscoreAction);
 				transformMenu.add(underscoreToSpaceAction);
-
+				transformMenu.add(underscoreToCamelAction);
+				transformMenu.add(underscoreToPascalAction);
 				popup.add(transformMenu);
 			}
 
 			@Override
 			public void customizeTextPopUpMenu(JPopupMenu popup, WSTextEditorPage textPage) {
 				// Add our custom action
-				popup.add(spaceToUnderscoreAction);
-				popup.add(underscoreToSpaceAction);
+				JMenu transformMenu = new JMenu("Transform");
+				transformMenu.add(spaceToUnderscoreAction);
+				transformMenu.add(underscoreToSpaceAction);
+				transformMenu.add(underscoreToCamelAction);
+				transformMenu.add(underscoreToPascalAction);
+				popup.add(transformMenu);
+
 			}
 		});
 
@@ -106,11 +118,17 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 			 * @see ro.sync.exml.workspace.api.standalone.MenuBarCustomizer#customizeMainMenu(javax.swing.JMenuBar)
 			 */
 			public void customizeMainMenu(JMenuBar mainMenuBar) {
-				JMenu myMenu = new JMenu("My menu");
+				JMenu myMenu = new JMenu("Transform");
 				JMenuItem toUnderscoreItem = new JMenuItem(spaceToUnderscoreAction);
 				JMenuItem toSpaceItem = new JMenuItem(underscoreToSpaceAction);
+				JMenuItem toCamelItem = new JMenuItem(underscoreToCamelAction);
+				JMenuItem toPascalItem = new JMenuItem(underscoreToPascalAction);
+
 				myMenu.add(toUnderscoreItem);
 				myMenu.add(toSpaceItem);
+				myMenu.add(toCamelItem);
+				myMenu.add(toPascalItem);
+
 				// Add your menu before the Help menu
 				mainMenuBar.add(myMenu, mainMenuBar.getMenuCount() - 1);
 			}
@@ -137,6 +155,12 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 							.setEnabled(EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())
 									|| EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID()));
 					underscoreToSpaceAction.setEnabled(EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())
+							|| EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID()));
+					underscoreToCamelAction
+					.setEnabled(EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())
+							|| EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID()));
+					underscoreToPascalAction
+					.setEnabled(EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())
 							|| EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID()));
 				}
 			}
@@ -209,9 +233,15 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 					comps.add(customUnderscoreButton);
 					
 					ToolbarButton customSpaceButton = new ToolbarButton(underscoreToSpaceAction, true);
-					
 					comps.add(customSpaceButton);
-					toolbarInfo.setComponents(comps.toArray(new JComponent[1]));
+
+					ToolbarButton customCamelButton = new ToolbarButton(underscoreToCamelAction, true);
+					comps.add(customCamelButton);
+					
+					ToolbarButton customPascalButton = new ToolbarButton(underscoreToPascalAction, true);
+					comps.add(customPascalButton);
+					
+					toolbarInfo.setComponents(comps.toArray(new JComponent[3]));
 				}
 			}
 		});
@@ -235,6 +265,39 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 		});
 	}
 
+	@SuppressWarnings("serial")
+	private Action transformCamelAction(StandalonePluginWorkspace pluginWorkspaceAccess, boolean b, String string) {
+		return new AbstractAction(string) {
+			public void actionPerformed(ActionEvent actionevent) {
+				// Get the current opened XML document
+				WSEditor editorAccess = pluginWorkspaceAccess
+						.getCurrentEditorAccess(StandalonePluginWorkspace.MAIN_EDITING_AREA);
+				// The action is available only in Author mode.
+				if (editorAccess != null) {
+					if (EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())) {
+						WSAuthorEditorPage authorPageAccess = (WSAuthorEditorPage) editorAccess.getCurrentPage();
+						if (authorPageAccess.hasSelection()) {
+							ReplaceCamelUtil.replaceCamelOnAuthor(authorPageAccess,b);
+
+						} else {
+							// No selection
+							pluginWorkspaceAccess.showInformationMessage("No selection available.");
+						}
+					} else if (EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID())) {
+						WSTextEditorPage textPage = (WSTextEditorPage) editorAccess.getCurrentPage();
+						if (textPage.hasSelection()) {
+							ReplaceCamelUtil.replaceCamelOnText(textPage, b);
+
+						} else {
+							// No selection
+							pluginWorkspaceAccess.showInformationMessage("No selection available.");
+						}
+					}
+				}
+			}
+		};
+	}
+
 	/**
 	 * Create the Swing action which shows the current selection.
 	 * 
@@ -242,7 +305,7 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 	 * @return The "Show Selection" action
 	 */
 	@SuppressWarnings("serial")
-	private AbstractAction createShowSelectionAction(final StandalonePluginWorkspace pluginWorkspaceAccess,
+	private AbstractAction transformSpaceAction(final StandalonePluginWorkspace pluginWorkspaceAccess,
 			String toReplace, String replaceWith, String replaceOperation) {
 		return new AbstractAction(replaceOperation) {
 			public void actionPerformed(ActionEvent actionevent) {
