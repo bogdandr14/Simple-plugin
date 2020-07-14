@@ -52,6 +52,7 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 	private JTextArea customMessagesArea;
 	private static String MENU_NAME = "Transform";
 	private static String NO_SELECTION = "No selection available.";
+
 	/**
 	 * @see ro.sync.exml.plugin.workspace.WorkspaceAccessPluginExtension#applicationStarted(ro.sync.exml.workspace.api.standalone.StandalonePluginWorkspace)
 	 */
@@ -64,23 +65,21 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 
 		// You can access the content inside each opened WSEditor depending on the
 		// current editing page (Text/Grid or Author).
-		// A sample action which will be mounted on the main menu, toolbar and
+		// Actions which will be mounted on the main menu, toolbar and
 		// contextual menu.
-		final Action spaceToUnderscoreAction = transformSpaceAction(pluginWorkspaceAccess,
-				" ", "_", "spaces to underscore");
-		final Action underscoreToSpaceAction = transformSpaceAction(pluginWorkspaceAccess,
-				"_", " ", "underscores to space");
-		final Action underscoreToCamelAction = transformCamelAction(pluginWorkspaceAccess,
-				false, "to camel case");
+		
+		final Action spaceToUnderscoreAction = transformSpaceAction(pluginWorkspaceAccess, " ", "_",
+				"spaces to underscore");
+		final Action underscoreToSpaceAction = transformSpaceAction(pluginWorkspaceAccess, "_", " ",
+				"underscores to space");
+		final Action underscoreToCamelAction = transformCamelAction(pluginWorkspaceAccess, false, "to camel case");
 
-		final Action underscoreToPascalAction = transformCamelAction(pluginWorkspaceAccess,
-				true, "to pascal case");
-		
-		final Action camelToUnderscoreAction = transformUnderscoreAction(pluginWorkspaceAccess,
-				"_", "camel to underscore");
-		
-		final Action camelToSpaceAction = transformUnderscoreAction(pluginWorkspaceAccess,
-				" ", "camel to space");
+		final Action underscoreToPascalAction = transformCamelAction(pluginWorkspaceAccess, true, "to pascal case");
+
+		final Action camelToUnderscoreAction = transformUnderscoreAction(pluginWorkspaceAccess, "_",
+				"camel to underscore");
+
+		final Action camelToSpaceAction = transformUnderscoreAction(pluginWorkspaceAccess, " ", "camel to space");
 		// Mount the action on the contextual menus for the Text and Author modes.
 		pluginWorkspaceAccess.addMenusAndToolbarsContributorCustomizer(new MenusAndToolbarsContributorCustomizer() {
 			/**
@@ -88,7 +87,7 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 			 */
 			@Override
 			public void customizeAuthorPopUpMenu(JPopupMenu popup, AuthorAccess authorAccess) {
-				// Add our custom action
+				// Add our custom actions
 				JMenu transformMenu = new JMenu(MENU_NAME);
 				transformMenu.add(spaceToUnderscoreAction);
 				transformMenu.add(underscoreToSpaceAction);
@@ -101,7 +100,7 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 
 			@Override
 			public void customizeTextPopUpMenu(JPopupMenu popup, WSTextEditorPage textPage) {
-				// Add our custom action
+				// Add our custom actions
 				JMenu transformMenu = new JMenu(MENU_NAME);
 				transformMenu.add(spaceToUnderscoreAction);
 				transformMenu.add(underscoreToSpaceAction);
@@ -160,20 +159,21 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 					spaceToUnderscoreAction
 							.setEnabled(EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())
 									|| EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID()));
-					underscoreToSpaceAction.setEnabled(EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())
-							|| EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID()));
+					underscoreToSpaceAction
+							.setEnabled(EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())
+									|| EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID()));
 					underscoreToCamelAction
-					.setEnabled(EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())
-							|| EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID()));
+							.setEnabled(EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())
+									|| EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID()));
 					underscoreToPascalAction
-					.setEnabled(EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())
-							|| EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID()));
+							.setEnabled(EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())
+									|| EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID()));
 					camelToUnderscoreAction
-					.setEnabled(EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())
-							|| EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID()));
+							.setEnabled(EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())
+									|| EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID()));
 					camelToSpaceAction
-					.setEnabled(EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())
-							|| EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID()));
+							.setEnabled(EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())
+									|| EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID()));
 				}
 			}
 
@@ -243,22 +243,22 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 					// "ro.sync.exml.workspace.api.standalone.ui.ToolbarButton" API component
 					ToolbarButton customUnderscoreButton = new ToolbarButton(spaceToUnderscoreAction, true);
 					comps.add(customUnderscoreButton);
-					
+
 					ToolbarButton customSpaceButton = new ToolbarButton(underscoreToSpaceAction, true);
 					comps.add(customSpaceButton);
 
 					ToolbarButton customCamelButton = new ToolbarButton(underscoreToCamelAction, true);
 					comps.add(customCamelButton);
-					
+
 					ToolbarButton customPascalButton = new ToolbarButton(underscoreToPascalAction, true);
 					comps.add(customPascalButton);
-					
+
 					ToolbarButton customToUnderscoreButton = new ToolbarButton(camelToUnderscoreAction, true);
 					comps.add(customToUnderscoreButton);
-					
+
 					ToolbarButton customToSpaceButton = new ToolbarButton(camelToSpaceAction, true);
 					comps.add(customToSpaceButton);
-					
+
 					toolbarInfo.setComponents(comps.toArray(new JComponent[5]));
 				}
 			}
@@ -282,7 +282,7 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 			}
 		});
 	}
-
+	//action to transform from pascal/camel case to underscore or space 
 	@SuppressWarnings("serial")
 	private Action transformUnderscoreAction(StandalonePluginWorkspace pluginWorkspaceAccess, String replaceWith,
 			String string) {
@@ -296,7 +296,7 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 					if (EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())) {
 						WSAuthorEditorPage authorPageAccess = (WSAuthorEditorPage) editorAccess.getCurrentPage();
 						if (authorPageAccess.hasSelection()) {
-							ReplaceFromCamelUtil.replaceFromCamelOnAuthor(authorPageAccess,replaceWith);
+							ReplaceFromCamelUtil.replaceFromCamelOnAuthor(authorPageAccess, replaceWith);
 
 						} else {
 							// No selection
@@ -316,7 +316,7 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 			}
 		};
 	}
-
+	//action to transform from underscore or space to pascal/camel case
 	@SuppressWarnings("serial")
 	private Action transformCamelAction(StandalonePluginWorkspace pluginWorkspaceAccess, boolean b, String string) {
 		return new AbstractAction(string) {
@@ -329,7 +329,7 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 					if (EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())) {
 						WSAuthorEditorPage authorPageAccess = (WSAuthorEditorPage) editorAccess.getCurrentPage();
 						if (authorPageAccess.hasSelection()) {
-							ReplaceCamelUtil.replaceCamelOnAuthor(authorPageAccess,b);
+							ReplaceCamelUtil.replaceCamelOnAuthor(authorPageAccess, b);
 
 						} else {
 							// No selection
@@ -356,9 +356,10 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 	 * @param pluginWorkspaceAccess The plugin workspace access.
 	 * @return The "Show Selection" action
 	 */
+	//action to transform from underscore to space or from space to underscore
 	@SuppressWarnings("serial")
-	private AbstractAction transformSpaceAction(final StandalonePluginWorkspace pluginWorkspaceAccess,
-			String toReplace, String replaceWith, String replaceOperation) {
+	private AbstractAction transformSpaceAction(final StandalonePluginWorkspace pluginWorkspaceAccess, String toReplace,
+			String replaceWith, String replaceOperation) {
 		return new AbstractAction(replaceOperation) {
 			public void actionPerformed(ActionEvent actionevent) {
 				// Get the current opened XML document
@@ -369,7 +370,7 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 					if (EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())) {
 						WSAuthorEditorPage authorPageAccess = (WSAuthorEditorPage) editorAccess.getCurrentPage();
 						if (authorPageAccess.hasSelection()) {
-							ReplaceContentUtil.replaceOnAuthor(authorPageAccess,toReplace, replaceWith);
+							ReplaceContentUtil.replaceOnAuthor(authorPageAccess, toReplace, replaceWith);
 
 						} else {
 							// No selection
@@ -378,7 +379,7 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 					} else if (EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID())) {
 						WSTextEditorPage textPage = (WSTextEditorPage) editorAccess.getCurrentPage();
 						if (textPage.hasSelection()) {
-							ReplaceContentUtil.replaceOnText(textPage,toReplace, replaceWith);
+							ReplaceContentUtil.replaceOnText(textPage, toReplace, replaceWith);
 
 						} else {
 							// No selection

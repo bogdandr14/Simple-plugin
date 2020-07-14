@@ -7,7 +7,7 @@ import ro.sync.ecss.extensions.api.content.TextContentIterator;
 import ro.sync.ecss.extensions.api.content.TextContext;
 import ro.sync.exml.workspace.api.editor.page.author.WSAuthorEditorPage;
 import ro.sync.exml.workspace.api.editor.page.text.WSTextEditorPage;
-
+//replaces space with underline and vice versa in author and text editor
 public class ReplaceContentUtil {
 	
 	public static void replaceOnAuthor(WSAuthorEditorPage authorPageAccess, String toReplace, String replaceWith) {
@@ -15,18 +15,21 @@ public class ReplaceContentUtil {
 	
 		TextContentIterator textContentIterator = controller.getTextContentIterator(authorPageAccess.getSelectionStart(), authorPageAccess.getSelectionEnd());
 		
+		//take each content from an element and modify the string inside 
 		while (textContentIterator.hasNext()) {
 			TextContext next = textContentIterator.next();
 			CharSequence string = next.getText();
 			String string2 = string.toString();
+			//interchange spaces with underscores
 			String replace = string2.replaceAll(toReplace, replaceWith);
+			//replace with the new string
 			next.replaceText(replace);
 		}
 			
 	}
 	
 	public static void replaceOnText(WSTextEditorPage textPage,String toReplace, String replaceWith) {
-		
+		//replaces all characters toReplace with the new characters replaceWith
 		String replaceAll = textPage.getSelectedText().replaceAll(toReplace, replaceWith);
 		textPage.deleteSelection();
 		
