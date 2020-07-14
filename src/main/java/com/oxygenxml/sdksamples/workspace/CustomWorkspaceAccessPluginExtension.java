@@ -62,7 +62,9 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 		// keys.
 		pluginWorkspaceAccess.setGlobalObjectProperty("can.edit.read.only.files", Boolean.FALSE);
 		// Check In action
-
+  
+		
+		
 		// You can access the content inside each opened WSEditor depending on the
 		// current editing page (Text/Grid or Author).
 		// Actions which will be mounted on the main menu, toolbar and
