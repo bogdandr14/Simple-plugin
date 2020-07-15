@@ -107,19 +107,13 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 			 */
 			public void customizeMainMenu(JMenuBar mainMenuBar) {
 				JMenu myMenu = new JMenu(MENU_NAME);
-				JMenuItem toUnderscoreItem = new JMenuItem(spaceToUnderscoreAction);
-				JMenuItem toSpaceItem = new JMenuItem(underscoreToSpaceAction);
-				JMenuItem toCamelItem = new JMenuItem(underscoreToCamelAction);
-				JMenuItem toPascalItem = new JMenuItem(underscoreToPascalAction);
-				JMenuItem fromCamelToUnderscoreItem = new JMenuItem(camelToUnderscoreAction);
-				JMenuItem fromCamelToSpaceItem = new JMenuItem(camelToSpaceAction);
-
-				myMenu.add(toUnderscoreItem);
-				myMenu.add(toSpaceItem);
-				myMenu.add(toCamelItem);
-				myMenu.add(toPascalItem);
-				myMenu.add(fromCamelToUnderscoreItem);
-				myMenu.add(fromCamelToSpaceItem);
+			
+				myMenu.add(spaceToUnderscoreAction);
+				myMenu.add(underscoreToSpaceAction);
+				myMenu.add(underscoreToCamelAction);
+				myMenu.add(underscoreToPascalAction);
+				myMenu.add(camelToUnderscoreAction);
+				myMenu.add(camelToSpaceAction);
 				// Add your menu before the Help menu
 				mainMenuBar.add(myMenu, mainMenuBar.getMenuCount() - 1);
 			}
@@ -142,24 +136,14 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 				WSEditor editorAccess = pluginWorkspaceAccess
 						.getCurrentEditorAccess(StandalonePluginWorkspace.MAIN_EDITING_AREA);
 				if (editorAccess != null) {
-					spaceToUnderscoreAction
-							.setEnabled(EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())
-									|| EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID()));
-					underscoreToSpaceAction
-							.setEnabled(EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())
-									|| EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID()));
-					underscoreToCamelAction
-							.setEnabled(EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())
-									|| EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID()));
-					underscoreToPascalAction
-							.setEnabled(EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())
-									|| EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID()));
-					camelToUnderscoreAction
-							.setEnabled(EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())
-									|| EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID()));
-					camelToSpaceAction
-							.setEnabled(EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())
-									|| EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID()));
+					boolean isOnEditor = EditorPageConstants.PAGE_AUTHOR.equals(editorAccess.getCurrentPageID())
+          		|| EditorPageConstants.PAGE_TEXT.equals(editorAccess.getCurrentPageID());
+          spaceToUnderscoreAction.setEnabled(isOnEditor);
+					underscoreToSpaceAction.setEnabled(isOnEditor);
+					underscoreToCamelAction.setEnabled(isOnEditor);
+					underscoreToPascalAction.setEnabled(isOnEditor);
+					camelToUnderscoreAction.setEnabled(isOnEditor);
+					camelToSpaceAction.setEnabled(isOnEditor);
 				}
 			}
 
