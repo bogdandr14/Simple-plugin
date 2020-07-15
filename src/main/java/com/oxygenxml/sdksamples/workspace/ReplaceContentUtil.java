@@ -25,7 +25,6 @@ public class ReplaceContentUtil {
 			//replace with the new string
 			next.replaceText(replace);
 		}
-			
 	}
 	
 	public static void replaceOnText(WSTextEditorPage textPage,String toReplace, String replaceWith) {

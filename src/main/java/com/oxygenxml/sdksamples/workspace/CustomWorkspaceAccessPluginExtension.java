@@ -12,23 +12,10 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 
 import ro.sync.ecss.extensions.api.AuthorAccess;
-import ro.sync.ecss.extensions.api.AuthorDocumentController;
-import ro.sync.ecss.extensions.api.AuthorOperationException;
-import ro.sync.ecss.extensions.api.Content;
-import ro.sync.ecss.extensions.api.content.RangeProcessor;
-import ro.sync.ecss.extensions.api.content.TextContentIterator;
-import ro.sync.ecss.extensions.api.content.TextContext;
-import ro.sync.ecss.extensions.api.node.AuthorDocumentFragment;
-import ro.sync.ecss.extensions.api.node.AuthorNode;
-import ro.sync.ecss.extensions.api.node.ContentIterator;
 import ro.sync.exml.editor.EditorPageConstants;
 import ro.sync.exml.plugin.workspace.WorkspaceAccessPluginExtension;
-import ro.sync.exml.workspace.api.PluginWorkspace;
-import ro.sync.exml.workspace.api.PluginWorkspaceProvider;
 import ro.sync.exml.workspace.api.editor.WSEditor;
 import ro.sync.exml.workspace.api.editor.page.author.WSAuthorEditorPage;
 import ro.sync.exml.workspace.api.editor.page.text.WSTextEditorPage;
@@ -37,8 +24,6 @@ import ro.sync.exml.workspace.api.standalone.MenuBarCustomizer;
 import ro.sync.exml.workspace.api.standalone.StandalonePluginWorkspace;
 import ro.sync.exml.workspace.api.standalone.ToolbarComponentsCustomizer;
 import ro.sync.exml.workspace.api.standalone.ToolbarInfo;
-import ro.sync.exml.workspace.api.standalone.ViewComponentCustomizer;
-import ro.sync.exml.workspace.api.standalone.ViewInfo;
 import ro.sync.exml.workspace.api.standalone.actions.MenusAndToolbarsContributorCustomizer;
 import ro.sync.exml.workspace.api.standalone.ui.ToolbarButton;
 
@@ -49,9 +34,8 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 	/**
 	 * The custom messages area. A sample component added to your custom view.
 	 */
-	private JTextArea customMessagesArea;
-	private static String MENU_NAME = "Transform";
-	private static String NO_SELECTION = "No selection available.";
+	private static final String MENU_NAME = "Replace";
+	private static final String NO_SELECTION = "No selection available.";
 
 	/**
 	 * @see ro.sync.exml.plugin.workspace.WorkspaceAccessPluginExtension#applicationStarted(ro.sync.exml.workspace.api.standalone.StandalonePluginWorkspace)
@@ -179,46 +163,7 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 				}
 			}
 
-			@Override
-			public void editorClosed(URL editorLocation) {
-				// An edited XML document has been closed.
-			}
-
-			/**
-			 * @see ro.sync.exml.workspace.api.listeners.WSEditorChangeListener#editorAboutToBeClosed(java.net.URL)
-			 */
-			@Override
-			public boolean editorAboutToBeClosed(URL editorLocation) {
-				// You can veto the closing of an XML document.
-				// Allow close
-				return true;
-			}
-
-			/**
-			 * The editor was relocated (Save as was called).
-			 * 
-			 * @see ro.sync.exml.workspace.api.listeners.WSEditorChangeListener#editorRelocated(java.net.URL,
-			 *      java.net.URL)
-			 */
-			@Override
-			public void editorRelocated(URL previousEditorLocation, URL newEditorLocation) {
-				//
-			}
-
-			@Override
-			public void editorPageChanged(URL editorLocation) {
-				checkActionsStatus(editorLocation);
-			}
-
-			@Override
-			public void editorSelected(URL editorLocation) {
-				checkActionsStatus(editorLocation);
-			}
-
-			@Override
-			public void editorActivated(URL editorLocation) {
-				checkActionsStatus(editorLocation);
-			}
+			
 		}, StandalonePluginWorkspace.MAIN_EDITING_AREA);
 
 		// You can use this callback to populate your custom toolbar (defined in the
@@ -230,7 +175,7 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 			 */
 			public void customizeToolbar(ToolbarInfo toolbarInfo) {
 				// The toolbar ID is defined in the "plugin.xml"
-				if ("SampleWorkspaceAccessToolbarID".equals(toolbarInfo.getToolbarID())) {
+				if ("ReplaceWorkspaceAccessToolbarID".equals(toolbarInfo.getToolbarID())) {
 					List<JComponent> comps = new ArrayList<>();
 					JComponent[] initialComponents = toolbarInfo.getComponents();
 					boolean hasInitialComponents = initialComponents != null && initialComponents.length > 0;
@@ -262,24 +207,6 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 					comps.add(customToSpaceButton);
 
 					toolbarInfo.setComponents(comps.toArray(new JComponent[5]));
-				}
-			}
-		});
-
-		pluginWorkspaceAccess.addViewComponentCustomizer(new ViewComponentCustomizer() {
-			/**
-			 * @see ro.sync.exml.workspace.api.standalone.ViewComponentCustomizer#customizeView(ro.sync.exml.workspace.api.standalone.ViewInfo)
-			 */
-			public void customizeView(ViewInfo viewInfo) {
-				if (
-				// The view ID defined in the "plugin.xml"
-				"SampleWorkspaceAccessID".equals(viewInfo.getViewID())) {
-					customMessagesArea = new JTextArea("Messages:");
-					viewInfo.setComponent(new JScrollPane(customMessagesArea));
-					viewInfo.setTitle("Custom Messages");
-					// You can have images located inside the JAR library and use them...
-					// viewInfo.setIcon(new
-					// ImageIcon(getClass().getClassLoader().getResource("images/customMessage.png").toString()));
 				}
 			}
 		});
