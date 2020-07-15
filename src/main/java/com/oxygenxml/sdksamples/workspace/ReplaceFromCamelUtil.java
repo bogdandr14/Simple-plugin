@@ -1,5 +1,7 @@
 package com.oxygenxml.sdksamples.workspace;
 
+import java.util.regex.Pattern;
+
 import javax.swing.text.BadLocationException;
 
 import ro.sync.ecss.extensions.api.AuthorDocumentController;
@@ -10,26 +12,28 @@ import ro.sync.exml.workspace.api.editor.page.text.WSTextEditorPage;
 //replace camel/pascal case with underscore or space
 public class ReplaceFromCamelUtil {
 	
-	static String fromCamelCase(String s, String add){
+	static String fromCamelCase(CharSequence c, String add){
 		//splits the string when it finds an upper case letter
-		String[] parts = s.split("(?=[A-Z])");
+		String[] parts = Pattern.compile("(?=[A-Z])").split(c, 0);
 		String normalCaseString = "";
-		for (String part : parts){
-			//if the string is empty, do not add underscore or space at the beginning of the string
-			if(normalCaseString.equals("")) {
-				normalCaseString = part;
-				continue;
-			}
-			//when replacing with underscore, make every letter to lower case
-			//when replacing with space, just add the string
-			if(add.equals("_"))
-				normalCaseString = normalCaseString + add + part.toLowerCase();
-			else
-				normalCaseString = normalCaseString + add + part;
-		}	
-		//when replacing with spaces, make the first letter upper case
-		if(add.equals(" "))
-			normalCaseString = normalCaseString.substring(0,1).toUpperCase() + normalCaseString.substring(1);
+    for (String part : parts) {
+      // if the string is empty, do not add underscore or space at the beginning of the string
+      if (normalCaseString.equals("")) {
+        normalCaseString = part;
+      } else {
+        // when replacing with underscore, make every letter to lower case
+        // when replacing with space, just add the string
+        if (add.equals("_")) {
+          normalCaseString = normalCaseString + add + part.toLowerCase();
+        } else {
+          normalCaseString = normalCaseString + add + part;
+        }
+      }  
+    }
+    // when replacing with spaces, make the first letter upper case
+    if (add.equals(" ")) {
+      normalCaseString = normalCaseString.substring(0, 1).toUpperCase() + normalCaseString.substring(1);
+    }
 		return normalCaseString;
 	}
 	

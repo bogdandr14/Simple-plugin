@@ -1,6 +1,8 @@
 package com.oxygenxml.sdksamples.workspace;
 
 
+import java.util.regex.Pattern;
+
 import javax.swing.text.BadLocationException;
 
 import ro.sync.ecss.extensions.api.AuthorDocumentController;
@@ -13,13 +15,12 @@ public class ReplaceCamelUtil extends ReplaceContentUtil{
 	
 	//set the first character of the word to upper case
 	static String toProperCase(String s) {
-	    return s.substring(0, 1).toUpperCase() +
-	               s.substring(1);
+	    return s.substring(0, 1).toUpperCase() + s.substring(1);
 	}
 
-	static String toCamelCase(String s, boolean isPascal){
+	static String toCamelCase(CharSequence c, boolean isPascal){
 		//splits the string when finding underscore or space
-		String[] parts = s.split("[\\_ ]");
+		String[] parts = Pattern.compile("[\\_ ]").split(c, 0);
 		String camelCaseString = "";
 		for (String part : parts){
 			//adds to the string the new format for each word
