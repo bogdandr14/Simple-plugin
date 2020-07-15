@@ -21,16 +21,16 @@ public class ReplaceCamelUtil extends ReplaceContentUtil{
 	static String toCamelCase(CharSequence c, boolean isPascal){
 		//splits the string when finding underscore or space
 		String[] parts = Pattern.compile("[\\_ ]").split(c, 0);
-		String camelCaseString = "";
+		StringBuilder camelCaseString = new StringBuilder();
 		for (String part : parts){
 			//adds to the string the new format for each word
-			camelCaseString = camelCaseString + toProperCase(part);
+			camelCaseString.append(toProperCase(part));
 		}	
 		//when creating the camel case, set the first letter to lower case
 		if(!isPascal) {
-			camelCaseString = camelCaseString.substring(0,1).toLowerCase() + camelCaseString.substring(1);
+			camelCaseString.replace(0, 1, camelCaseString.subSequence(0, 1).toString().toLowerCase());
 		}
-		return camelCaseString;
+		return camelCaseString.toString();
 	}
 	
 	public static void replaceCamelOnAuthor(WSAuthorEditorPage authorPageAccess, boolean isPascal) {
@@ -42,11 +42,9 @@ public class ReplaceCamelUtil extends ReplaceContentUtil{
 		while (textContentIterator.hasNext()) {
 			TextContext next = textContentIterator.next();
 			CharSequence string = next.getText();
-			String string2 = string.toString();
-			//replaces in string2 to pascal/camel case
-			next.replaceText(toCamelCase(string2, isPascal));
+			//changes in current content the string format to pascal/camel case
+			next.replaceText(toCamelCase(string, isPascal));
 		}
-			
 	}
 	
 	public static void replaceCamelOnText(WSTextEditorPage textPage,boolean isPascal) {

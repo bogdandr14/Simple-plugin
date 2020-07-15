@@ -20,10 +20,8 @@ public class ReplaceContentUtil {
 			TextContext next = textContentIterator.next();
 			CharSequence string = next.getText();
 			String string2 = string.toString();
-			//interchange spaces with underscores
-			String replace = string2.replaceAll(toReplace, replaceWith);
-			//replace with the new string
-			next.replaceText(replace);
+			//replace spaces with underscores or vice versa in the current content
+			next.replaceText(string2.replaceAll(toReplace, replaceWith));
 		}
 	}
 	

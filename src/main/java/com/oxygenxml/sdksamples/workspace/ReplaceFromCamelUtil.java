@@ -12,30 +12,26 @@ import ro.sync.exml.workspace.api.editor.page.text.WSTextEditorPage;
 //replace camel/pascal case with underscore or space
 public class ReplaceFromCamelUtil {
 	
-	static String fromCamelCase(CharSequence c, String add){
-		//splits the string when it finds an upper case letter
-		String[] parts = Pattern.compile("(?=[A-Z])").split(c, 0);
-		String normalCaseString = "";
+  static String fromCamelCase(CharSequence c, String add) {
+    // splits the string when it finds an upper case letter
+    String[] parts = Pattern.compile("(?=[A-Z])").split(c, 0);
+    StringBuilder normalCaseString = new StringBuilder();
     for (String part : parts) {
-      // if the string is empty, do not add underscore or space at the beginning of the string
-      if (normalCaseString.equals("")) {
-        normalCaseString = part;
+      // when replacing with underscore, also make every letter to lower case
+      if (add.equals("_")) {
+        normalCaseString.append(add + part.toLowerCase());
       } else {
-        // when replacing with underscore, make every letter to lower case
-        // when replacing with space, just add the string
-        if (add.equals("_")) {
-          normalCaseString = normalCaseString + add + part.toLowerCase();
-        } else {
-          normalCaseString = normalCaseString + add + part;
-        }
-      }  
+        normalCaseString.append(add + part);
+      }
     }
+    //remove the underscore or space added at the beginning of the string
+      normalCaseString.deleteCharAt(0);
     // when replacing with spaces, make the first letter upper case
     if (add.equals(" ")) {
-      normalCaseString = normalCaseString.substring(0, 1).toUpperCase() + normalCaseString.substring(1);
+      normalCaseString.replace(0, 1, normalCaseString.subSequence(0, 1).toString().toUpperCase());
     }
-		return normalCaseString;
-	}
+    return normalCaseString.toString();
+  }
 	
 	public static void replaceFromCamelOnAuthor(WSAuthorEditorPage authorPageAccess, String replaceWith) {
 		AuthorDocumentController controller = authorPageAccess.getDocumentController();
@@ -46,9 +42,8 @@ public class ReplaceFromCamelUtil {
 		while (textContentIterator.hasNext()) {
 			TextContext next = textContentIterator.next();
 			CharSequence string = next.getText();
-			String string2 = string.toString();
-			//replaces in string2 with replaceWith
-			next.replaceText(fromCamelCase(string2, replaceWith));
+			//replaces in current content the camel/pascal case with replaceWith
+			next.replaceText(fromCamelCase(string, replaceWith));
 		}
 			
 	}
