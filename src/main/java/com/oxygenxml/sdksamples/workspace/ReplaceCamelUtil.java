@@ -1,6 +1,5 @@
 package com.oxygenxml.sdksamples.workspace;
 
-
 import java.util.regex.Pattern;
 
 import javax.swing.text.BadLocationException;

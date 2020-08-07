@@ -11,6 +11,7 @@ import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.table.TableCellEditor;
 import javax.swing.JPopupMenu;
 
 import ro.sync.ecss.extensions.api.AuthorAccess;

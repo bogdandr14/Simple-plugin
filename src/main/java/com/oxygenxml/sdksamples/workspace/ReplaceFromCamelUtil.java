@@ -45,7 +45,6 @@ public class ReplaceFromCamelUtil {
 			//replaces in current content the camel/pascal case with replaceWith
 			next.replaceText(fromCamelCase(string, replaceWith));
 		}
-			
 	}
 	
 	public static void replaceFromCamelOnText(WSTextEditorPage textPage,String replaceWith) {
