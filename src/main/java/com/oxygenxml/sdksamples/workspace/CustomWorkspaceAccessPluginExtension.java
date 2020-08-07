@@ -47,8 +47,6 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 		pluginWorkspaceAccess.setGlobalObjectProperty("can.edit.read.only.files", Boolean.FALSE);
 		// Check In action
   
-		
-		
 		// You can access the content inside each opened WSEditor depending on the
 		// current editing page (Text/Grid or Author).
 		// Actions which will be mounted on the main menu, toolbar and
@@ -146,8 +144,6 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 					camelToSpaceAction.setEnabled(isOnEditor);
 				}
 			}
-
-			
 		}, StandalonePluginWorkspace.MAIN_EDITING_AREA);
 
 		// You can use this callback to populate your custom toolbar (defined in the
@@ -210,7 +206,6 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 						WSAuthorEditorPage authorPageAccess = (WSAuthorEditorPage) editorAccess.getCurrentPage();
 						if (authorPageAccess.hasSelection()) {
 							ReplaceFromCamelUtil.replaceFromCamelOnAuthor(authorPageAccess, replaceWith);
-
 						} else {
 							// No selection
 							pluginWorkspaceAccess.showInformationMessage(NO_SELECTION);
@@ -219,7 +214,6 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 						WSTextEditorPage textPage = (WSTextEditorPage) editorAccess.getCurrentPage();
 						if (textPage.hasSelection()) {
 							ReplaceFromCamelUtil.replaceFromCamelOnText(textPage, replaceWith);
-
 						} else {
 							// No selection
 							pluginWorkspaceAccess.showInformationMessage(NO_SELECTION);
@@ -243,7 +237,6 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 						WSAuthorEditorPage authorPageAccess = (WSAuthorEditorPage) editorAccess.getCurrentPage();
 						if (authorPageAccess.hasSelection()) {
 							ReplaceCamelUtil.replaceCamelOnAuthor(authorPageAccess, b);
-
 						} else {
 							// No selection
 							pluginWorkspaceAccess.showInformationMessage(NO_SELECTION);
@@ -252,7 +245,6 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 						WSTextEditorPage textPage = (WSTextEditorPage) editorAccess.getCurrentPage();
 						if (textPage.hasSelection()) {
 							ReplaceCamelUtil.replaceCamelOnText(textPage, b);
-
 						} else {
 							// No selection
 							pluginWorkspaceAccess.showInformationMessage(NO_SELECTION);
@@ -284,7 +276,6 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 						WSAuthorEditorPage authorPageAccess = (WSAuthorEditorPage) editorAccess.getCurrentPage();
 						if (authorPageAccess.hasSelection()) {
 							ReplaceContentUtil.replaceOnAuthor(authorPageAccess, toReplace, replaceWith);
-
 						} else {
 							// No selection
 							pluginWorkspaceAccess.showInformationMessage(NO_SELECTION);
@@ -293,7 +284,6 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 						WSTextEditorPage textPage = (WSTextEditorPage) editorAccess.getCurrentPage();
 						if (textPage.hasSelection()) {
 							ReplaceContentUtil.replaceOnText(textPage, toReplace, replaceWith);
-
 						} else {
 							// No selection
 							pluginWorkspaceAccess.showInformationMessage(NO_SELECTION);
