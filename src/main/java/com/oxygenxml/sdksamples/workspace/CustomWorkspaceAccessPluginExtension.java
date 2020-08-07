@@ -57,12 +57,9 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 		final Action underscoreToSpaceAction = transformSpaceAction(pluginWorkspaceAccess, "_", " ",
 				"underscores to space");
 		final Action underscoreToCamelAction = transformCamelAction(pluginWorkspaceAccess, false, "to camel case");
-
 		final Action underscoreToPascalAction = transformCamelAction(pluginWorkspaceAccess, true, "to pascal case");
-
 		final Action camelToUnderscoreAction = transformUnderscoreAction(pluginWorkspaceAccess, "_",
 				"camel to underscore");
-
 		final Action camelToSpaceAction = transformUnderscoreAction(pluginWorkspaceAccess, " ", "camel to space");
 		// Mount the action on the contextual menus for the Text and Author modes.
 		pluginWorkspaceAccess.addMenusAndToolbarsContributorCustomizer(new MenusAndToolbarsContributorCustomizer() {
@@ -93,7 +90,6 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 				transformMenu.add(camelToUnderscoreAction);
 				transformMenu.add(camelToSpaceAction);
 				popup.add(transformMenu);
-
 			}
 		});
 
