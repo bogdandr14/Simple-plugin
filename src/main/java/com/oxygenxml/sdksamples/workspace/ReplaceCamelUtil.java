@@ -13,11 +13,18 @@ import ro.sync.exml.workspace.api.editor.page.text.WSTextEditorPage;
 //replaces from underscore or space to camel/pascal
 public class ReplaceCamelUtil extends ReplaceContentUtil{
 	
-	//set the first character of the word to upper case
+	/** Sets the first character of the word to upper case
+	* @param s The text to be modified
+	* return The text in camel case.
+	*/
 	static String toProperCase(String s) {
 	    return s.substring(0, 1).toUpperCase() + s.substring(1);
 	}
-
+	/** Replaces from underscore or space to camel/pascal case
+	* @param c The text to be modified
+	* @param isPascal Specifies if the text should be transformed to pascal or camel case
+	* @return The text in pascal/camel case.
+	*/
 	static String toCamelCase(CharSequence c, boolean isPascal){
 		//splits the string when finding underscore or space
 		String[] parts = Pattern.compile("[\\_ ]").split(c, 0);
