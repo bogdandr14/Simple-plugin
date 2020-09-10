@@ -7,7 +7,7 @@ import ro.sync.ecss.extensions.api.content.TextContentIterator;
 import ro.sync.ecss.extensions.api.content.TextContext;
 import ro.sync.exml.workspace.api.editor.page.author.WSAuthorEditorPage;
 import ro.sync.exml.workspace.api.editor.page.text.WSTextEditorPage;
-//replaces space with underline and vice versa in author and text editor
+//This class is used to replace the space with underline and vice versa in author and text editor
 public class ReplaceContentUtil {
 	
 	public static void replaceOnAuthor(WSAuthorEditorPage authorPageAccess, String toReplace, String replaceWith) {
