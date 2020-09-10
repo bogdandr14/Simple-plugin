@@ -9,7 +9,7 @@ import ro.sync.ecss.extensions.api.content.TextContentIterator;
 import ro.sync.ecss.extensions.api.content.TextContext;
 import ro.sync.exml.workspace.api.editor.page.author.WSAuthorEditorPage;
 import ro.sync.exml.workspace.api.editor.page.text.WSTextEditorPage;
-//replaces from underscore or space to camel/pascal
+//This class is used to replace from underscore or space to camel/pascal case.
 public class ReplaceCamelUtil extends ReplaceContentUtil{
 	
 	//set the first character of the word to upper case
