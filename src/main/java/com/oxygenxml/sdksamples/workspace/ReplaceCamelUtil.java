@@ -21,7 +21,6 @@ public class ReplaceCamelUtil extends ReplaceContentUtil{
 	static String toProperCase(String s) {
 	    return s.substring(0, 1).toUpperCase() + s.substring(1);
 	}
-
 	static String toCamelCase(CharSequence c, boolean isPascal){
 		//splits the string when finding underscore or space
 		String[] parts = Pattern.compile("[\\_ ]").split(c, 0);
