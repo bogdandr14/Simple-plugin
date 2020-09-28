@@ -24,6 +24,7 @@ public class ReplaceFromCamelUtil {
       } else {
         normalCaseString.append(add + part);
       }
+      
     }
     //remove the underscore or space added at the beginning of the string
       normalCaseString.deleteCharAt(0);
