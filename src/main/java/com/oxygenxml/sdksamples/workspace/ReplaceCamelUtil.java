@@ -62,9 +62,6 @@ public class ReplaceCamelUtil extends ReplaceContentUtil{
 		//try to replace from underscore or space to camel/pascal case 
 		try {
 			
-			
-			
-			
 			textPage.getDocument().insertString(textPage.getCaretOffset(), toCamelCase(replaceAll, isPascal), null);
 		} catch (BadLocationException e) {
 			e.printStackTrace();
