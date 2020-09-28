@@ -10,7 +10,6 @@ import ro.sync.ecss.extensions.api.content.TextContext;
 import ro.sync.exml.workspace.api.editor.page.author.WSAuthorEditorPage;
 import ro.sync.exml.workspace.api.editor.page.text.WSTextEditorPage;
 //replace camel/pascal case with underscore or space
-
 public class ReplaceFromCamelUtil {
 	
   static String fromCamelCase(CharSequence c, String add) {
