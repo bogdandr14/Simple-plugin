@@ -37,9 +37,6 @@ public class ReplaceCamelUtil extends ReplaceContentUtil{
 		return camelCaseString.toString();
 	}
 	
-	
-	
-	
 	public static void replaceCamelOnAuthor(WSAuthorEditorPage authorPageAccess, boolean isPascal) {
 		AuthorDocumentController controller = authorPageAccess.getDocumentController();
 	
