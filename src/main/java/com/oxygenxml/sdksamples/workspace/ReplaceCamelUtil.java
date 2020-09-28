@@ -12,9 +12,8 @@ import ro.sync.exml.workspace.api.editor.page.text.WSTextEditorPage;
 
 /**
  * This class is used to replace from a text selected, the underscore or space to camel/pascal case.
+ * 
  * @author Bogdan Draghici
- *
- *
  */
 public class ReplaceCamelUtil extends ReplaceContentUtil{
 	
