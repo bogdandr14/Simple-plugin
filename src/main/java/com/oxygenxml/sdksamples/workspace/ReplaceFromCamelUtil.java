@@ -47,6 +47,7 @@ public class ReplaceFromCamelUtil {
 		}
 	}
 	
+	
 	public static void replaceFromCamelOnText(WSTextEditorPage textPage,String replaceWith) {
 		
 		String replaceAll = textPage.getSelectedText();
