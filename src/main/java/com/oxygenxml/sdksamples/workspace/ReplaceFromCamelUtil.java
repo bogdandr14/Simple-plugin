@@ -49,7 +49,6 @@ public class ReplaceFromCamelUtil {
 	
 	
 	public static void replaceFromCamelOnText(WSTextEditorPage textPage,String replaceWith) {
-		
 		String replaceAll = textPage.getSelectedText();
 		textPage.deleteSelection();
 		//try to replace from camel/pascal case to underscore or space
